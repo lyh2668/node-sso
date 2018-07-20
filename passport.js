@@ -33,12 +33,17 @@ app.all('*', (req, res, next) => {
 app.post('/authenticate', async (req, res, next) => {
   const { token, sid, name } = req.body
   try {
-    // 验证token是否有效, 取得用户名和用户id
-    let tokenExists = await redisClient.existsAsync(token)
+    // 检查请求的真实IP是否为授权系统
+    // nginx会将真实IP传过来，伪造x-forward-for是无效的
+    if (!checkSecurityIP(req.headers['x-real-ip'])) {
+      throw new Error('ip is invalid')
+    }
+    // 判断token是否还存在于redis中并验证token是否有效, 取得用户名和用户id
+    const tokenExists = await redisClient.existsAsync(token)
     if (!tokenExists) {
       throw new Error('token is invalid')
     }
-    let { username, id } = await jwt.verify(token, tokenConfig.secret)
+    const { username, id } = await jwt.verify(token, tokenConfig.secret)
     // 校验成功注册子系统
     register(token, sid, name)
     return res.json({
@@ -77,7 +82,7 @@ app.post('/login', async (req, res, next) => {
 
     res.setHeader(
       'Set-Cookie',
-      `token=${newToken};domain=xxx.com;max-age=${tokenConfig.expiresIn * 1000};httpOnly`)
+      `token=${newToken};domain=xxx.com;max-age=${tokenConfig.expiresIn};httpOnly`)
 
     return res.json({
       code: 0,
@@ -188,6 +193,12 @@ const deleteToken = async (token) => {
   } catch (err) {
     throw err
   }
+}
+
+const checkSecurityIP = (ip) => {
+  // 这里可以去从数据库中读取一份维护的有效IP地址列表
+  const securityIP = '127.0.0.1'
+  return securityIP === ip
 }
 
 const port = 11000

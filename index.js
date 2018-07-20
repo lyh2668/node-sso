@@ -25,7 +25,7 @@ const defaultPrefix = 'sess:'
 
 const sess = {
   cookie: {
-    maxAge: 1000 * 1000  // 有效期，单位是毫秒
+    maxAge: 60 * 1000 // 有效期，60秒刷新一次Cookie
   }
 }
 
