@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>SSO TEST</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <div v-if="!userinfo.username">
+      <input type="text" placeholder="用户名" v-model="username" />
+      <input type="password" placeholder="密码" v-model="password" />
+      <button @click="login">登录</button>
+    </div>
+    <div v-else>
+      用户已经登录: {{ userinfo.username }}
+    </div>
+    <button @click="getUserInfo">获取用户信息</button>
+    <button @click="logout">退出登录</button>
+  </div>
+  <script>
+    const passportUrl = 'http://passport.xxx.com:1280'
+    const axiosInstance = axios.create({
+      headers: {'Content-Type': 'application/json;charset=utf-8'},
+      withCredentials: true
+    })
+
+    const app = new Vue({
+      el: '#app',
+      data () {
+        return {
+          username: '',
+          password: '',
+          isLogin: false,
+          userinfo: {}
+        }
+      },
+      mounted () {
+        this.getUserInfo()
+      },
+      methods: {
+        async getUserInfo () {
+          let res = await axiosInstance.get('/users')
+          if (res.data.code === 0) {
+            this.userinfo = res.data.data
+          }
+        },
+        async login () {
+          try {
+            console.log('login')
+            let res = await axiosInstance.post(`${passportUrl}/login`, {
+              username: this.username,
+              password: this.password
+            })
+            console.log(res)
+            if (res.data.code === 0) {
+              alert('登录成功')
+              this.getUserInfo()
+            }
+          } catch (err) {
+            console.log(err.message)
+          }
+        },
+        async logout () {
+          let res = await axiosInstance.post(`${passportUrl}/logout`)
+          if (res.data.code === 0) {
+            this.userinfo = {}
+          }
+        }
+      }
+    })
+  </script>
+</body>
+</html>

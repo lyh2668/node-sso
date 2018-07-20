@@ -1,0 +1,34 @@
+{
+  "name": "ssotest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "babel-node passport.js",
+    "starta": "cross-env NODE_ENV=ssoa babel-node index.js",
+    "startb": "cross-env NODE_ENV=ssob babel-node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "cross-env": "^5.2.0"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.3",
+    "connect-redis": "^3.3.3",
+    "express": "^4.16.3",
+    "express-session": "^1.15.6",
+    "jsonwebtoken": "^8.3.0",
+    "redis": "^2.8.0",
+    "sequelize": "^4.38.0",
+    "tedious": "^2.6.3",
+    "uuid": "^3.3.2"
+  }
+}
