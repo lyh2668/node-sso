@@ -1,6 +1,8 @@
 基于Node Express的SSO（单点登录）实践
 =====
 
+[掘金文章：不务正业的前端之SSO（单点登录）实践](https://juejin.im/post/5b51f39b5188251a9f24a264)
+
 ## 简介
 此示例主要实现了a.xxx.com和b.xxx.com同一域名下的单点登录，其中一个子系统登录以后passport认证服务器将会颁发一个令牌token，存于domain为.xxx.com的cookie中，子系统可使用该令牌去向各自系统的服务器发起受保护资源的请求，子系统将会对token进行检验，通过则会注册子系统，子系统会和用户建立一个局部会话，后续的受保护资源请求将会优先通过cookie中的sid获取。
 
@@ -106,3 +108,4 @@ export const salt = 'xxxx'
 "startb": "cross-env NODE_ENV=ssob babel-node index.js"
 ```
 分别用npm start、npm run starta 和 npm run startb启动三个服务
+
